@@ -2,10 +2,11 @@ import { ODataParser } from "../odata/core";
 import { Util } from "../utils/util";
 import { Logger, LogLevel } from "../utils/logging";
 import { HttpClient } from "../net/httpclient";
-import { mergeHeaders } from "../net/utils";
+import { mergeHeaders, mergeOptions } from "../net/utils";
 import { RuntimeConfig } from "../configuration/pnplibconfig";
 import { TypedHash } from "../collections/collections";
 import { BatchParseException } from "../utils/exceptions";
+import { ConfigOptions } from "../net/utils";
 
 /**
  * Manages a batch of OData operations
@@ -15,7 +16,9 @@ export class ODataBatch {
     private _dependencies: Promise<void>[];
     private _requests: ODataBatchRequestInfo[];
 
-    constructor(private baseUrl: string, private _batchId = Util.getGUID()) {
+    constructor(baseUrl: string, _batchId?: string);
+    constructor(baseUrl: string, _batchId?: string, _options?: ConfigOptions);
+    constructor(private baseUrl: string, private _batchId = Util.getGUID(), private _options: ConfigOptions = {}) {
         this._requests = [];
         this._dependencies = [];
     }
@@ -209,6 +212,8 @@ export class ODataBatch {
                 "headers": batchHeaders,
                 "method": "POST",
             };
+
+            mergeOptions(batchOptions, this._options);
 
             Logger.write(`[${this.batchId}] (${(new Date()).getTime()}) Sending batch request.`, LogLevel.Info);
 

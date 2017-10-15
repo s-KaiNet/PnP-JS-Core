@@ -253,7 +253,7 @@ export class Web extends SharePointQueryableShareableWeb {
      *
      */
     public createBatch(): ODataBatch {
-        return new ODataBatch(this.parentUrl);
+        return new ODataBatch(this.parentUrl, Util.getGUID(), this._options);
     }
 
     /**

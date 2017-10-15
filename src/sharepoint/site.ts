@@ -5,6 +5,7 @@ import { ContextInfo, DocumentLibraryInformation } from "./types";
 import { spExtractODataId } from "./odata";
 import { ODataBatch } from "./batch";
 import { Features } from "./features";
+import { Util } from "../utils/util";
 
 /**
  * Describes a site collection
@@ -100,7 +101,7 @@ export class Site extends SharePointQueryableInstance {
      *
      */
     public createBatch(): ODataBatch {
-        return new ODataBatch(this.parentUrl);
+        return new ODataBatch(this.parentUrl, Util.getGUID(), this._options);
     }
 
     /**
