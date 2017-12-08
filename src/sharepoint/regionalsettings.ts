@@ -71,15 +71,6 @@ export interface RegionalSettingsProps {
 }
 
 /**
- * Describes TimeZone ODada object
- */
-export class TimeZone extends SharePointQueryableInstance {
-    constructor(baseUrl: string | SharePointQueryable, path = "timezone") {
-        super(baseUrl, path);
-    }
-}
-
-/**
  * Describes installed languages ODada queriable collection
  */
 export class InstalledLanguages extends SharePointQueryableInstance {
@@ -89,10 +80,78 @@ export class InstalledLanguages extends SharePointQueryableInstance {
 }
 
 /**
+ * Describes TimeZone ODada object
+ */
+export class TimeZone extends SharePointQueryableInstance {
+    constructor(baseUrl: string | SharePointQueryable, path = "timezone") {
+        super(baseUrl, path);
+    }
+
+    /**
+     * Gets an Local Time by UTC Time
+     *
+     * @param utcTime UTC Time as Date or ISO String
+     */
+    public utcToLocalTime(utcTime: string | Date): Promise<{ localTime: string }> {
+        let dateIsoString: string;
+        if (typeof utcTime === "string") {
+            dateIsoString = utcTime;
+        } else {
+            dateIsoString = utcTime.toISOString();
+        }
+        return this.clone(TimeZone, `utctolocaltime(@date)?@date='${dateIsoString}'`)
+            .postCore()
+            .then(res => {
+                return {
+                    localTime: res.UTCToLocalTime,
+                };
+            });
+    }
+
+    /**
+     * Gets an UTC Time by Local Time
+     *
+     * @param localTime Local Time as Date or ISO String
+     */
+    public localTimeToUTC(localTime: string | Date): Promise<{ utcTime: string }> {
+        let dateIsoString: string;
+        if (typeof localTime === "string") {
+            dateIsoString = localTime;
+        } else {
+            dateIsoString = localTime.toISOString();
+        }
+        return this.clone(TimeZone, `localtimetoutc(@date)?@date='${dateIsoString}'`)
+            .postCore()
+            .then(res => {
+                return {
+                    utcTime: res.LocalTimeToUTC,
+                };
+            });
+    }
+}
+
+/**
  * Describes time zones queriable collection
  */
 export class TimeZones extends SharePointQueryableCollection {
-  constructor(baseUrl: string | SharePointQueryable, path = "timezones") {
-      super(baseUrl, path);
-  }
+    constructor(baseUrl: string | SharePointQueryable, path = "timezones") {
+        super(baseUrl, path);
+    }
+
+    // https://msdn.microsoft.com/en-us/library/office/jj247008.aspx - timezones ids
+    /**
+     * Gets an TimeZone by id
+     *
+     * @param id The integer id of the timezone to retrieve
+     */
+    public getById(id: number): TimeZone {
+        const tz: TimeZone = new TimeZone("", `${this.parentUrl}/timezones(${id})`);
+        tz.get = (...args: any[]) => {
+            return (tz as any).postCore(args[1], args[0]);
+        };
+        // Redefining get to trigger POST reqeust as
+        // `/timezones(${id})` only supports 'POST' method
+        return tz;
+    }
+
 }
