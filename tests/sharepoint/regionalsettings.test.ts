@@ -27,14 +27,23 @@ describe("RegionalSettings", () => {
     });
 
     describe("timeZone", () => {
+
         it("Should return _api/web/regionalsettings/timezone", () => {
             expect(regionalsettings.timeZone.toUrl()).to.match(toMatchEndRegex("_api/web/regionalsettings/timezone"));
         });
+
     });
 
     describe("timeZones", () => {
+
         it("Should return _api/web/regionalsettings/timezones", () => {
             expect(regionalsettings.timeZones.toUrl()).to.match(toMatchEndRegex("_api/web/regionalsettings/timezones"));
         });
+
+        it("Should return _api/web/regionalsettings/timezones(15)", () => {
+            expect(regionalsettings.timeZones.getById(15).toUrl()).to.match(toMatchEndRegex("_api/web/regionalsettings/timezones(15)"));
+        });
+
     });
+
 });

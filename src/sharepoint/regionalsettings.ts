@@ -1,4 +1,12 @@
-import { SharePointQueryable, SharePointQueryableInstance, SharePointQueryableCollection } from "./sharepointqueryable";
+import {
+    SharePointQueryable,
+    SharePointQueryableInstance,
+    SharePointQueryableCollection,
+} from "./sharepointqueryable";
+
+import {
+    spODataEntity,
+} from "./odata";
 
 /**
  * Describes regional settings ODada object
@@ -16,10 +24,17 @@ export class RegionalSettings extends SharePointQueryableInstance {
     }
 
     /**
-     * Gets installed languages
+     * Gets the collection of languages used in a server farm.
      */
     public get installedLanguages(): InstalledLanguages {
         return new InstalledLanguages(this);
+    }
+
+    /**
+     * Gets the collection of language packs that are installed on the server.
+     */
+    public get globalInstalledLanguages(): InstalledLanguages {
+        return new InstalledLanguages(this, "globalinstalledlanguages");
     }
 
     /**
@@ -35,39 +50,15 @@ export class RegionalSettings extends SharePointQueryableInstance {
     public get timeZones(): TimeZones {
         return new TimeZones(this);
     }
-
 }
 
-export interface RegionalSettingsProps {
-    AdjustHijriDays: number;
-    AlternateCalendarType: number;
-    AM: string;
-    CalendarType: number;
-    Collation: number;
-    CollationLCID: number;
-    DateFormat: number;
-    DateSeparator: string;
-    DecimalSeparator: string;
-    DigitGrouping: string;
-    FirstDayOfWeek: number;
-    FirstWeekOfYear: number;
-    IsEastAsia: boolean;
-    IsRightToLeft: boolean;
-    IsUIRightToLeft: boolean;
-    ListSeparator: string;
-    LocaleId: number;
-    NegativeSign: string;
-    NegNumberMode: number;
-    PM: string;
-    PositiveSign: string;
-    ShowWeeks: boolean;
-    ThousandSeparator: string;
-    Time24: boolean;
-    TimeMarkerPosition: number;
-    TimeSeparator: string;
-    WorkDayEndHour: number;
-    WorkDays: number;
-    WorkDayStartHour: number;
+/**
+ * Describes installed languages ODada queriable collection
+ */
+export class InstalledLanguages extends SharePointQueryableCollection {
+    constructor(baseUrl: string | SharePointQueryable, path = "installedlanguages") {
+        super(baseUrl, path);
+    }
 }
 
 /**
@@ -77,14 +68,42 @@ export class TimeZone extends SharePointQueryableInstance {
     constructor(baseUrl: string | SharePointQueryable, path = "timezone") {
         super(baseUrl, path);
     }
-}
 
-/**
- * Describes installed languages ODada queriable collection
- */
-export class InstalledLanguages extends SharePointQueryableInstance {
-    constructor(baseUrl: string | SharePointQueryable, path = "installedlanguages") {
-        super(baseUrl, path);
+    /**
+     * Gets an Local Time by UTC Time
+     *
+     * @param utcTime UTC Time as Date or ISO String
+     */
+    public utcToLocalTime(utcTime: string | Date): Promise<string> {
+        let dateIsoString: string;
+        if (typeof utcTime === "string") {
+            dateIsoString = utcTime;
+        } else {
+            dateIsoString = utcTime.toISOString();
+        }
+
+        return this.clone(TimeZone, `utctolocaltime('${dateIsoString}')`)
+            .postCore()
+            .then(res => res.hasOwnProperty("UTCToLocalTime") ? res.UTCToLocalTime : res);
+    }
+
+    /**
+     * Gets an UTC Time by Local Time
+     *
+     * @param localTime Local Time as Date or ISO String
+     */
+    public localTimeToUTC(localTime: string | Date): Promise<string> {
+        let dateIsoString: string;
+
+        if (typeof localTime === "string") {
+            dateIsoString = localTime;
+        } else {
+            dateIsoString = localTime.toISOString();
+        }
+
+        return this.clone(TimeZone, `localtimetoutc('${dateIsoString}')`)
+            .postCore()
+            .then(res => res.hasOwnProperty("LocalTimeToUTC") ? res.LocalTimeToUTC : res);
     }
 }
 
@@ -92,7 +111,18 @@ export class InstalledLanguages extends SharePointQueryableInstance {
  * Describes time zones queriable collection
  */
 export class TimeZones extends SharePointQueryableCollection {
-  constructor(baseUrl: string | SharePointQueryable, path = "timezones") {
-      super(baseUrl, path);
-  }
+    constructor(baseUrl: string | SharePointQueryable, path = "timezones") {
+        super(baseUrl, path);
+    }
+
+    // https://msdn.microsoft.com/en-us/library/office/jj247008.aspx - timezones ids
+    /**
+     * Gets an TimeZone by id
+     *
+     * @param id The integer id of the timezone to retrieve
+     */
+    public getById(id: number): Promise<TimeZone> {
+        // do the post and merge the result into a TimeZone instance so the data and methods are available
+        return this.clone(TimeZones, `GetById(${id})`).postAsCore({}, spODataEntity(TimeZone));
+    }
 }

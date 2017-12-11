@@ -1414,3 +1414,35 @@ export interface AppData {
     IsClientSideSolution?: boolean;
     Title?: string;
 }
+
+export interface RegionalSettingsProps {
+    AdjustHijriDays: number;
+    AlternateCalendarType: number;
+    AM: string;
+    CalendarType: number;
+    Collation: number;
+    CollationLCID: number;
+    DateFormat: number;
+    DateSeparator: string;
+    DecimalSeparator: string;
+    DigitGrouping: string;
+    FirstDayOfWeek: number;
+    FirstWeekOfYear: number;
+    IsEastAsia: boolean;
+    IsRightToLeft: boolean;
+    IsUIRightToLeft: boolean;
+    ListSeparator: string;
+    LocaleId: number;
+    NegativeSign: string;
+    NegNumberMode: number;
+    PM: string;
+    PositiveSign: string;
+    ShowWeeks: boolean;
+    ThousandSeparator: string;
+    Time24: boolean;
+    TimeMarkerPosition: number;
+    TimeSeparator: string;
+    WorkDayEndHour: number;
+    WorkDays: number;
+    WorkDayStartHour: number;
+}
