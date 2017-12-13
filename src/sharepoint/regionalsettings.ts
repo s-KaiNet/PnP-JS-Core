@@ -8,6 +8,10 @@ import {
     spODataEntity,
 } from "./odata";
 
+import {
+    Util,
+} from "../utils/util";
+
 /**
  * Describes regional settings ODada object
  */
@@ -98,7 +102,7 @@ export class TimeZone extends SharePointQueryableInstance {
         if (typeof localTime === "string") {
             dateIsoString = localTime;
         } else {
-            dateIsoString = localTime.toISOString();
+            dateIsoString = Util.dateAdd(localTime, "minute", localTime.getTimezoneOffset() * -1).toISOString();
         }
 
         return this.clone(TimeZone, `localtimetoutc('${dateIsoString}')`)
