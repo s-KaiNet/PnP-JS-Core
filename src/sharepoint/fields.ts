@@ -45,7 +45,7 @@ export class Fields extends SharePointQueryableCollection {
     /**
      * Gets a list from the collection by guid id
      *
-     * @param title The Id of the list
+     * @param id The Id of the list
      */
     public getById(id: string): Field {
         const f: Field = new Field(this);
