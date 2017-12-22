@@ -382,8 +382,8 @@ export enum UrlFieldFormatType {
 }
 
 export interface BasePermissions {
-    Low: number;
-    High: number;
+    Low: string;
+    High: string;
 }
 
 export enum PermissionKind {
