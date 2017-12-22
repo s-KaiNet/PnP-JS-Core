@@ -368,18 +368,14 @@ export class List extends SharePointQueryableSecurable {
         const q = this.clone(List, "renderlistdata(@viewXml)");
         q.query.add("@viewXml", `'${viewXml}'`);
         return q.postCore().then(data => {
-            if (typeof data === "string") {
-                data = JSON.parse(data);
-            }
+            // data is always a string
+            data = JSON.parse(data);
+
             if (data.hasOwnProperty("RenderListData")) {
-                const renderListData: RenderListData =
-                    typeof data.RenderListData === "string" ?
-                        JSON.parse(data.RenderListData) :
-                        data.RenderListData;
-                return renderListData;
-            } else {
-                return data;
+                return JSON.parse(data.RenderListData);
             }
+
+            return data;
         });
     }
 

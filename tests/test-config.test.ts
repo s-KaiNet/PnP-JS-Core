@@ -63,7 +63,7 @@ before(function (done: MochaDone) {
             sp: {
                 fetchClientFactory: () => {
                     return new NodeFetchClient(testSettings.siteUrl, testSettings.clientId, testSettings.clientSecret);
-                }
+                },
             },
         });
 
@@ -71,12 +71,12 @@ before(function (done: MochaDone) {
         // cleanUpAllSubsites();
 
         // create the web in which we will test
-        let d = new Date();
-        let g = Util.getGUID();
+        const d = new Date();
+        const g = Util.getGUID();
 
         pnp.sp.web.webs.add(`PnP-JS-Core Testing ${d.toDateString()}`, g).then(() => {
 
-            let url = Util.combinePaths(testSettings.siteUrl, g);
+            const url = Util.combinePaths(testSettings.siteUrl, g);
 
             // set the testing web url so our tests have access if needed
             testSettings.webUrl = url;
@@ -89,7 +89,7 @@ before(function (done: MochaDone) {
                 sp: {
                     fetchClientFactory: () => {
                         return new NodeFetchClient(url, testSettings.clientId, testSettings.clientSecret);
-                    }
+                    },
                 },
             });
 
@@ -115,10 +115,10 @@ after(() => {
 export function cleanUpAllSubsites() {
     pnp.sp.site.rootWeb.webs.select("Title").get().then((w) => {
         w.forEach((element: any) => {
-            let web = new Web(element["odata.id"], "");
+            const web = new Web(element["odata.id"], "");
             web.webs.select("Title").get().then((sw: any[]) => {
                 return Promise.all(sw.map((value) => {
-                    let web2 = new Web(value["odata.id"], "");
+                    const web2 = new Web(value["odata.id"], "");
                     return web2.delete();
                 }));
             }).then(() => { web.delete(); });
