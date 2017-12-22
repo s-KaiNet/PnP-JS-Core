@@ -88,8 +88,9 @@ describe("RoleDefinitions", () => {
     if (testSettings.enableWebTests) {
 
         describe("add", () => {
-            it("should add a new role definition to the web", () => {
-                return expect(pnp.sp.web.roleDefinitions.add("test role definition", "A test role defintion", 34, { High: "176", Low: "138612801" })).to.eventually.be.fulfilled;
+            it("should add a new role definition to the root web", () => {
+                const perms = { High: "176", Low: "138612801" };
+                return expect(pnp.sp.site.rootWeb.roleDefinitions.add(pnp.util.getRandomString(10), "A test role defintion", 2134, perms)).to.eventually.be.fulfilled;
             });
         });
     }

@@ -106,8 +106,12 @@ export class SharePointQueryableSecurable extends SharePointQueryableInstance {
         if (!perm) {
             return true;
         }
+
+        const low = parseFloat(value.Low);
+        const high = parseFloat(value.High);
+
         if (perm === PermissionKind.FullMask) {
-            return (value.High & 32767) === 32767 && value.Low === 65535;
+            return (high & 32767) === 32767 && low === 65535;
         }
 
         perm = perm - 1;
@@ -115,10 +119,10 @@ export class SharePointQueryableSecurable extends SharePointQueryableInstance {
 
         if (perm >= 0 && perm < 32) {
             num = num << perm;
-            return 0 !== (value.Low & num);
+            return 0 !== (low & num);
         } else if (perm >= 32 && perm < 64) {
             num = num << perm - 32;
-            return 0 !== (value.High & num);
+            return 0 !== (high & num);
         }
         return false;
     }
