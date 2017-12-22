@@ -365,14 +365,18 @@ export class List extends SharePointQueryableSecurable {
      * Renders list data based on the view xml provided
      */
     public renderListData(viewXml: string): Promise<RenderListData> {
-
         const q = this.clone(List, "renderlistdata(@viewXml)");
         q.query.add("@viewXml", `'${viewXml}'`);
         return q.postCore().then(data => {
-            // data will be a string, so we parse it again
-            data = JSON.parse(data);
+            if (typeof data === "string") {
+                data = JSON.parse(data);
+            }
             if (data.hasOwnProperty("RenderListData")) {
-                return data.RenderListData;
+                const renderListData: RenderListData =
+                    typeof data.RenderListData === "string" ?
+                        JSON.parse(data.RenderListData) :
+                        data.RenderListData;
+                return renderListData;
             } else {
                 return data;
             }
