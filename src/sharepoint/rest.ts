@@ -5,6 +5,7 @@ import { Web } from "./webs";
 import { Util } from "../utils/util";
 import { SharePointQueryable, SharePointQueryableConstructor } from "./sharepointqueryable";
 import { UserProfileQuery } from "./userprofiles";
+import { NavigationService, INavigationService } from "./navigation";
 import { ODataBatch } from "./batch";
 import { UrlException } from "../utils/exceptions";
 import { UtilityMethod, UtilityMethods } from "./utilities";
@@ -103,10 +104,16 @@ export class SPRest {
 
     /**
      * Access to user profile methods
-     *
      */
     public get profiles(): UserProfileQuery {
         return new UserProfileQuery(this._baseUrl).configure(this._options);
+    }
+
+    /**
+     * Access to the site collection level navigation service
+     */
+    public get navigation(): INavigationService {
+        return new NavigationService();
     }
 
     /**
