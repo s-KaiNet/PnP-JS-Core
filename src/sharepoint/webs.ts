@@ -140,6 +140,13 @@ export class Web extends SharePointQueryableShareableWeb {
     }
 
     /**
+     * Gets the set of all web properties from the read-only collection.
+     */
+    public get allProperties(): SharePointQueryableCollection {
+        return this.clone(SharePointQueryableCollection, "allproperties");
+    }
+
+    /**
      * Gets a collection of WebInfos for this web's subwebs
      *
      */
