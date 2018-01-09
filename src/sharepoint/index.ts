@@ -48,7 +48,6 @@ export {
 
 export {
     NavigationNodeAddResult,
-    NavigationNodeUpdateResult,
     NavigationNodes,
     NavigationNode,
 } from "./navigation";
