@@ -152,6 +152,8 @@ export class AttachmentFile extends SharePointQueryableInstance {
 
     /**
      * Delete this attachment file and send it to Recycle Bin
+     * 
+     * @param eTag Value used in the IF-Match header, by default "*"
      */
     public recycle(eTag = "*"): Promise<void> {
         return this.clone(AttachmentFile, "recycleObject").postCore({
