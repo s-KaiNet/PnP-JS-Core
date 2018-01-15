@@ -10,6 +10,10 @@ export {
 } from "./attachmentfiles";
 
 export {
+    ODataBatch,
+} from "./batch";
+
+export {
     FieldAddResult,
     FieldUpdateResult,
 } from "./fields";
