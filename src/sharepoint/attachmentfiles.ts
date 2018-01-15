@@ -70,6 +70,15 @@ export class AttachmentFiles extends SharePointQueryableCollection {
     public deleteMultiple(...files: string[]): Promise<void> {
         return files.reduce((chain, file) => chain.then(() => this.getByName(file).delete()), Promise.resolve());
     }
+
+    /**
+     * Delete multiple attachments from the collection and sends it to recycle bin. Not supported for batching.
+     *
+     * @files name The collection of files to delete
+     */
+    public recycleMultiple(...files: string[]): Promise<void> {
+        return files.reduce((chain, file) => chain.then(() => this.getByName(file).recycle()), Promise.resolve());
+    }
 }
 
 /**
@@ -134,6 +143,20 @@ export class AttachmentFile extends SharePointQueryableInstance {
      */
     public delete(eTag = "*"): Promise<void> {
         return this.postCore({
+            headers: {
+                "IF-Match": eTag,
+                "X-HTTP-Method": "DELETE",
+            },
+        });
+    }
+
+    /**
+     * Delete this attachment file and send it to Recycle Bin
+     * 
+     * @param eTag Value used in the IF-Match header, by default "*"
+     */
+    public recycle(eTag = "*"): Promise<void> {
+        return this.clone(AttachmentFile, "recycleObject").postCore({
             headers: {
                 "IF-Match": eTag,
                 "X-HTTP-Method": "DELETE",
