@@ -9,6 +9,7 @@ import { ListItemFormUpdateValue } from "./types";
 import { ODataParserBase } from "../odata/core";
 import { AttachmentFiles } from "./attachmentfiles";
 import { List } from "./lists";
+import { Logger, LogLevel } from "../pnp";
 
 /**
  * Describes a collection of Item objects
@@ -66,7 +67,58 @@ export class Items extends SharePointQueryableCollection {
         return this.getAs(new PagedItemCollectionParser());
     }
 
-    //
+    /**
+     * Gets all the items in a list, regardless of count. Does not support batching or caching
+     * 
+     *  @param requestSize Number of items to return in each request (Default: 2000)
+     */
+    public getAll(requestSize = 2000): Promise<any[]> {
+
+        Logger.write("Calling items.getAll should be done sparingly. Ensure this is the correct choice. If you are unsure, it is not.", LogLevel.Warning);
+
+        // this will be used for the actual query
+        // and we set no metadata here to try and reduce traffic
+        const items = new Items(this, "").top(requestSize).configure({
+            headers: {
+                "Accept": "application/json;odata=nometadata",
+            },
+        });
+
+        // let's copy over the odata query params that can be applied
+        // $top - allow setting the page size this way (override what we did above)
+        // $select - allow picking the return fields (good behavior)
+        // $filter - allow setting a filter, though this may fail due for large lists
+        this.query.getKeys()
+            .filter(k => /^\$select$|^\$filter$|^\$top$/.test(k.toLowerCase()))
+            .reduce((i, k) => {
+                i.query.add(k, this.query.get(k));
+                return i;
+            }, items);
+
+        // give back the promise
+        return new Promise((resolve, reject) => {
+
+            // this will eventually hold the items we return
+            const itemsCollector: any[] = [];
+
+            // action that will gather up our results recursively
+            const gatherer = (last: PagedItemCollection<any>) => {
+
+                // collect that set of results
+                [].push.apply(itemsCollector, last.results);
+
+                // if we have more, repeat - otherwise resolve with the collected items
+                if (last.hasNext) {
+                    last.getNext().then(gatherer).catch(reject);
+                } else {
+                    resolve(itemsCollector);
+                }
+            };
+
+            // start the cycle
+            items.getPaged().then(gatherer).catch(reject);
+        });
+    }
 
     /**
      * Adds a new item to the collection
