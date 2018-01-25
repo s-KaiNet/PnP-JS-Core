@@ -14,6 +14,8 @@ export {
 } from "./batch";
 
 export {
+    Field,
+    Fields,
     FieldAddResult,
     FieldUpdateResult,
 } from "./fields";
