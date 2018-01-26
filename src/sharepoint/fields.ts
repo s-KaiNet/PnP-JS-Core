@@ -7,6 +7,7 @@ import {
     FieldTypes,
     CalendarType,
     UrlFieldFormatType,
+    FieldUserSelectionMode,
 } from "./types";
 
 /**
@@ -67,12 +68,12 @@ export class Fields extends SharePointQueryableCollection {
 
         const postBody: string = JSON.stringify({
             "parameters":
-            Util.extend({
-                "__metadata":
-                {
-                    "type": "SP.XmlSchemaFieldCreationInformation",
-                },
-            }, info),
+                Util.extend({
+                    "__metadata":
+                        {
+                            "type": "SP.XmlSchemaFieldCreationInformation",
+                        },
+                }, info),
         });
 
         return this.clone(Fields, "createfieldasxml").postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
@@ -299,6 +300,59 @@ export class Fields extends SharePointQueryableCollection {
         };
 
         return this.add(title, "SP.FieldUrl", Util.extend(props, properties));
+    }
+
+    /**
+     * Adds a user field to the colleciton
+     * 
+     * @param title The new field's title
+     * @param selectionMode The selection mode of the field
+     * @param selectionGroup Value that specifies the identifier of the SharePoint group whose members can be selected as values of the field
+     * @param properties 
+     */
+    public addUser(title: string,
+        selectionMode: FieldUserSelectionMode,
+        properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+
+        const props = {
+            FieldTypeKind: 20,
+            SelectionMode: selectionMode,
+        };
+
+        return this.add(title, "SP.FieldUser", Util.extend(props, properties));
+    }
+
+    /**
+     * Adds a SP.FieldLookup to the collection
+     * 
+     * @param title The new field's title
+     * @param lookupListId The guid id of the list where the source of the lookup is found
+     * @param lookupFieldName The internal name of the field in the source list
+     * @param properties Set of additional properties to set on the new field
+     */
+    public addLookup(
+        title: string,
+        lookupListId: string,
+        lookupFieldName: string,
+        properties?: TypedHash<string | number | boolean>,
+    ): Promise<FieldAddResult> {
+
+        const postBody: string = JSON.stringify({
+            parameters: Util.extend({
+                FieldTypeKind: 7,
+                LookupFieldName: lookupFieldName,
+                LookupListId: lookupListId,
+                Title: title,
+                "__metadata": { "type": "SP.FieldCreationInformation" },
+            }, properties),
+        });
+
+        return this.clone(Fields, "addfield").postAsCore<{ Id: string }>({ body: postBody }).then((data) => {
+            return {
+                data: data,
+                field: this.getById(data.Id),
+            };
+        });
     }
 }
 
