@@ -91,7 +91,7 @@ export class Fields extends SharePointQueryableCollection {
      * @param fieldType The new field's type (ex: SP.FieldText)
      * @param properties Differ by type of field being created (see: https://msdn.microsoft.com/en-us/library/office/dn600182.aspx)
      */
-    public add(title: string, fieldType: string, properties: TypedHash<string | number | boolean> = {}): Promise<FieldAddResult> {
+    public add(title: string, fieldType: string, properties: TypedHash<any> = {}): Promise<FieldAddResult> {
 
         const postBody: string = JSON.stringify(Util.extend({
             "Title": title,
@@ -113,7 +113,7 @@ export class Fields extends SharePointQueryableCollection {
      * @param maxLength The maximum number of characters allowed in the value of the field.
      * @param properties Differ by type of field being created (see: https://msdn.microsoft.com/en-us/library/office/dn600182.aspx)
      */
-    public addText(title: string, maxLength = 255, properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+    public addText(title: string, maxLength = 255, properties?: TypedHash<any>): Promise<FieldAddResult> {
 
         const props: { FieldTypeKind: number, MaxLength: number } = {
             FieldTypeKind: 2,
@@ -137,7 +137,7 @@ export class Fields extends SharePointQueryableCollection {
         formula: string,
         dateFormat: DateTimeFieldFormatType,
         outputType: FieldTypes = FieldTypes.Text,
-        properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+        properties?: TypedHash<any>): Promise<FieldAddResult> {
 
         const props: {
             DateFormat: DateTimeFieldFormatType;
@@ -167,7 +167,7 @@ export class Fields extends SharePointQueryableCollection {
         displayFormat: DateTimeFieldFormatType = DateTimeFieldFormatType.DateOnly,
         calendarType: CalendarType = CalendarType.Gregorian,
         friendlyDisplayFormat = 0,
-        properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+        properties?: TypedHash<any>): Promise<FieldAddResult> {
 
         const props: {
             DateTimeCalendarType: CalendarType;
@@ -196,7 +196,7 @@ export class Fields extends SharePointQueryableCollection {
         title: string,
         minValue?: number,
         maxValue?: number,
-        properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+        properties?: TypedHash<any>): Promise<FieldAddResult> {
 
         let props: { FieldTypeKind: number } = { FieldTypeKind: 9 };
 
@@ -225,7 +225,7 @@ export class Fields extends SharePointQueryableCollection {
         minValue?: number,
         maxValue?: number,
         currencyLocalId = 1033,
-        properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+        properties?: TypedHash<any>): Promise<FieldAddResult> {
 
         let props: { CurrencyLocaleId: number; FieldTypeKind: number; } = {
             CurrencyLocaleId: currencyLocalId,
@@ -262,7 +262,7 @@ export class Fields extends SharePointQueryableCollection {
         restrictedMode = false,
         appendOnly = false,
         allowHyperlink = true,
-        properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+        properties?: TypedHash<any>): Promise<FieldAddResult> {
 
         const props: {
             AllowHyperlink: boolean;
@@ -291,7 +291,7 @@ export class Fields extends SharePointQueryableCollection {
     public addUrl(
         title: string,
         displayFormat: UrlFieldFormatType = UrlFieldFormatType.Hyperlink,
-        properties?: TypedHash<string | number | boolean>,
+        properties?: TypedHash<any>,
     ): Promise<FieldAddResult> {
 
         const props: { DisplayFormat: UrlFieldFormatType; FieldTypeKind: number } = {
@@ -312,7 +312,7 @@ export class Fields extends SharePointQueryableCollection {
      */
     public addUser(title: string,
         selectionMode: FieldUserSelectionMode,
-        properties?: TypedHash<string | number | boolean>): Promise<FieldAddResult> {
+        properties?: TypedHash<any>): Promise<FieldAddResult> {
 
         const props = {
             FieldTypeKind: 20,
@@ -334,7 +334,7 @@ export class Fields extends SharePointQueryableCollection {
         title: string,
         lookupListId: string,
         lookupFieldName: string,
-        properties?: TypedHash<string | number | boolean>,
+        properties?: TypedHash<any>,
     ): Promise<FieldAddResult> {
 
         const postBody: string = JSON.stringify({
@@ -368,7 +368,7 @@ export class Field extends SharePointQueryableInstance {
      * @param properties A plain object hash of values to update for the list
      * @param fieldType The type value, required to update child field type properties
      */
-    public update(properties: TypedHash<string | number | boolean>, fieldType = "SP.Field"): Promise<FieldUpdateResult> {
+    public update(properties: TypedHash<any>, fieldType = "SP.Field"): Promise<FieldUpdateResult> {
 
         const postBody: string = JSON.stringify(Util.extend({
             "__metadata": { "type": fieldType },
