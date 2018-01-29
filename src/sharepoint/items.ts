@@ -87,7 +87,7 @@ export class Items extends SharePointQueryableCollection {
         // let's copy over the odata query params that can be applied
         // $top - allow setting the page size this way (override what we did above)
         // $select - allow picking the return fields (good behavior)
-        // $filter - allow setting a filter, though this may fail due for large lists
+        // $filter - allow setting a filter, though this may fail for large lists
         this.query.getKeys()
             .filter(k => /^\$select$|^\$filter$|^\$top$/.test(k.toLowerCase()))
             .reduce((i, k) => {
