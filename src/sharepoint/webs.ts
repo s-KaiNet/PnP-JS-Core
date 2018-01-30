@@ -512,6 +512,13 @@ export class Web extends SharePointQueryableShareableWeb {
     }
 
     /**
+     * Gets the collection of available client side web parts for this web instance
+     */
+    public getClientSideWebParts(): SharePointQueryableCollection {
+        return this.clone(SharePointQueryableCollection, "GetClientSideWebParts");
+    }
+
+    /**
      * Creates a new client side page
      * 
      * @param pageName Name of the new page
