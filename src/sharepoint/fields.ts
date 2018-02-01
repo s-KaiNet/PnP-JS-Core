@@ -3,11 +3,13 @@ import { TypedHash } from "../collections/collections";
 import { Util } from "../utils/util";
 import {
     XmlSchemaFieldCreationInformation,
+    FieldCreationProperties,
     DateTimeFieldFormatType,
     FieldTypes,
     CalendarType,
     UrlFieldFormatType,
     FieldUserSelectionMode,
+    ChoiceFieldFormatType,
 } from "./types";
 
 /**
@@ -84,6 +86,7 @@ export class Fields extends SharePointQueryableCollection {
         });
     }
 
+
     /**
      * Adds a new list to the collection
      *
@@ -91,7 +94,7 @@ export class Fields extends SharePointQueryableCollection {
      * @param fieldType The new field's type (ex: SP.FieldText)
      * @param properties Differ by type of field being created (see: https://msdn.microsoft.com/en-us/library/office/dn600182.aspx)
      */
-    public add(title: string, fieldType: string, properties: TypedHash<any> = {}): Promise<FieldAddResult> {
+    public add(title: string, fieldType: string, properties: FieldCreationProperties & { FieldTypeKind: number }): Promise<FieldAddResult> {
 
         const postBody: string = JSON.stringify(Util.extend({
             "Title": title,
@@ -113,7 +116,7 @@ export class Fields extends SharePointQueryableCollection {
      * @param maxLength The maximum number of characters allowed in the value of the field.
      * @param properties Differ by type of field being created (see: https://msdn.microsoft.com/en-us/library/office/dn600182.aspx)
      */
-    public addText(title: string, maxLength = 255, properties?: TypedHash<any>): Promise<FieldAddResult> {
+    public addText(title: string, maxLength = 255, properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
         const props: { FieldTypeKind: number, MaxLength: number } = {
             FieldTypeKind: 2,
@@ -137,7 +140,7 @@ export class Fields extends SharePointQueryableCollection {
         formula: string,
         dateFormat: DateTimeFieldFormatType,
         outputType: FieldTypes = FieldTypes.Text,
-        properties?: TypedHash<any>): Promise<FieldAddResult> {
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
         const props: {
             DateFormat: DateTimeFieldFormatType;
@@ -167,7 +170,7 @@ export class Fields extends SharePointQueryableCollection {
         displayFormat: DateTimeFieldFormatType = DateTimeFieldFormatType.DateOnly,
         calendarType: CalendarType = CalendarType.Gregorian,
         friendlyDisplayFormat = 0,
-        properties?: TypedHash<any>): Promise<FieldAddResult> {
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
         const props: {
             DateTimeCalendarType: CalendarType;
@@ -196,7 +199,7 @@ export class Fields extends SharePointQueryableCollection {
         title: string,
         minValue?: number,
         maxValue?: number,
-        properties?: TypedHash<any>): Promise<FieldAddResult> {
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
         let props: { FieldTypeKind: number } = { FieldTypeKind: 9 };
 
@@ -225,7 +228,7 @@ export class Fields extends SharePointQueryableCollection {
         minValue?: number,
         maxValue?: number,
         currencyLocalId = 1033,
-        properties?: TypedHash<any>): Promise<FieldAddResult> {
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
         let props: { CurrencyLocaleId: number; FieldTypeKind: number; } = {
             CurrencyLocaleId: currencyLocalId,
@@ -262,7 +265,7 @@ export class Fields extends SharePointQueryableCollection {
         restrictedMode = false,
         appendOnly = false,
         allowHyperlink = true,
-        properties?: TypedHash<any>): Promise<FieldAddResult> {
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
         const props: {
             AllowHyperlink: boolean;
@@ -291,7 +294,7 @@ export class Fields extends SharePointQueryableCollection {
     public addUrl(
         title: string,
         displayFormat: UrlFieldFormatType = UrlFieldFormatType.Hyperlink,
-        properties?: TypedHash<any>,
+        properties?: FieldCreationProperties,
     ): Promise<FieldAddResult> {
 
         const props: { DisplayFormat: UrlFieldFormatType; FieldTypeKind: number } = {
@@ -312,7 +315,7 @@ export class Fields extends SharePointQueryableCollection {
      */
     public addUser(title: string,
         selectionMode: FieldUserSelectionMode,
-        properties?: TypedHash<any>): Promise<FieldAddResult> {
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
         const props = {
             FieldTypeKind: 20,
@@ -334,7 +337,7 @@ export class Fields extends SharePointQueryableCollection {
         title: string,
         lookupListId: string,
         lookupFieldName: string,
-        properties?: TypedHash<any>,
+        properties?: FieldCreationProperties,
     ): Promise<FieldAddResult> {
 
         const postBody: string = JSON.stringify({
@@ -353,6 +356,91 @@ export class Fields extends SharePointQueryableCollection {
                 field: this.getById(data.Id),
             };
         });
+    }
+
+    /**
+     * Adds a new SP.FieldChoice to the collection
+     *
+     * @param title The field title.
+     * @param choices The choices for the field.
+     * @param format The display format of the available options for the field.
+     * @param fillIn Specifies whether the field allows fill-in values.
+     * @param properties Differ by type of field being created (see: https://msdn.microsoft.com/en-us/library/office/dn600182.aspx)
+     */
+    public addChoice(
+        title: string,
+        choices: string[],
+        format: ChoiceFieldFormatType = ChoiceFieldFormatType.Dropdown,
+        fillIn?: boolean,
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
+
+        const props: {
+            Choices: {
+                results: string[];
+            };
+            EditFormat: ChoiceFieldFormatType;
+            FieldTypeKind: number;
+            FillInChoice: boolean;
+        } = {
+                Choices: {
+                    results: choices,
+                },
+                EditFormat: format,
+                FieldTypeKind: 6,
+                FillInChoice: fillIn,
+            };
+
+        return this.add(title, "SP.FieldChoice", Util.extend(props, properties));
+    }
+
+    /**
+     * Adds a new SP.FieldMultiChoice to the collection
+     *
+     * @param title The field title.
+     * @param choices The choices for the field.
+     * @param fillIn Specifies whether the field allows fill-in values.
+     * @param properties Differ by type of field being created (see: https://msdn.microsoft.com/en-us/library/office/dn600182.aspx)
+     */
+    public addMultiChoice(
+        title: string,
+        choices: string[],
+        fillIn?: boolean,
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
+
+        const props: {
+            Choices: {
+                results: string[];
+            };
+            FieldTypeKind: number;
+            FillInChoice: boolean;
+        } = {
+                Choices: {
+                    results: choices,
+                },
+                FieldTypeKind: 15,
+                FillInChoice: fillIn,
+            };
+
+        return this.add(title, "SP.FieldMultiChoice", Util.extend(props, properties));
+    }
+
+    /**
+     * Adds a new SP.FieldBoolean to the collection
+     *
+     * @param title The field title.
+     * @param properties Differ by type of field being created (see: https://msdn.microsoft.com/en-us/library/office/dn600182.aspx)
+     */
+    public addBoolean(
+        title: string,
+        properties?: FieldCreationProperties): Promise<FieldAddResult> {
+
+        const props: {
+            FieldTypeKind: number;
+        } = {
+                FieldTypeKind: 8,
+            };
+
+        return this.add(title, "SP.Field", Util.extend(props, properties));
     }
 }
 
