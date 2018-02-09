@@ -9,7 +9,7 @@ var gulp = require("gulp"),
     webpack = require('webpack'),
     webpackConfig = require('../webpack.config.js'),
     config = require('./@configuration.js'),
-    gutil = require('gulp-util');
+    PluginError = require('plugin-error');
 
 // package the definitions
 gulp.task("package:defs", () => {
@@ -25,7 +25,7 @@ gulp.task("package:code", ["build:lib"], (done) => {
     webpack(webpackConfig, (err, stats) => {
 
         if (err) {
-            throw new gutil.PluginError("package:code", err);
+            throw new PluginError("package:code", err);
         }
 
         console.log(stats.toString({
