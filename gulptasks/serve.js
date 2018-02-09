@@ -8,10 +8,12 @@
 
 var gulp = require("gulp"),
     tsc = require("gulp-typescript"),
-    gutil = require("gulp-util"),
+    PluginError = require('plugin-error'),
     webpack = require('webpack'),
     server = require("webpack-dev-server"),
-    config = require("../webpack-serve.config.js");
+    config = require("../webpack-serve.config.js"),
+    log = require("fancy-log"),
+    colors = require("ansi-colors");
 
 gulp.task("serve", (done) => {
 
@@ -25,11 +27,11 @@ gulp.task("serve", (done) => {
 
     // Start a webpack-dev-server
     new server(webpack(config), serverSettings).listen(8080, "localhost", (err) => {
-        
+
         if (err) {
-            throw new gutil.PluginError("serve", err);
+            throw new PluginError("serve", err);
         }
 
-        gutil.log("File will be served from:", gutil.colors.bgBlue.white("https://localhost:8080/assets/pnp.js"));
+        log("File will be served from:", colors.bgblue(colors.white("https://localhost:8080/assets/pnp.js")));
     });
 });
