@@ -358,6 +358,20 @@ export interface XmlSchemaFieldCreationInformation {
     SchemaXml: string;
 }
 
+export interface FieldCreationProperties extends TypedHash<string | number | boolean> {
+    DefaultFormula?: string;
+    Description?: string;
+    EnforceUniqueValues?: boolean;
+    FieldTypeKind?: number;
+    Group?: string;
+    Hidden?: boolean;
+    Indexed?: boolean;
+    Required?: boolean;
+    Title?: string;
+    ValidationFormula?: string;
+    ValidationMessage?: string;
+}
+
 export enum CalendarType {
     Gregorian = 1,
     Japan = 3,
@@ -379,6 +393,11 @@ export enum CalendarType {
 export enum UrlFieldFormatType {
     Hyperlink = 0,
     Image = 1,
+}
+
+export enum ChoiceFieldFormatType {
+    Dropdown,
+    RadioButtons,
 }
 
 export interface BasePermissions {
