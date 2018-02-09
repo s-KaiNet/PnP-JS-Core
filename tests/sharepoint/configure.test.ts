@@ -105,7 +105,7 @@ describe("Custom options", () => {
             })
             .then(() => {
                 validate();
-                return sp.web.fields.add("test", "Text");
+                return sp.web.fields.add("test", "Text", { FieldTypeKind: 8 });
             })
             .then(() => {
                 validate();
