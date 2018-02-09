@@ -88,7 +88,7 @@ export class Fields extends SharePointQueryableCollection {
 
 
     /**
-     * Adds a new list to the collection
+     * Adds a new field to the collection
      *
      * @param title The new field's title
      * @param fieldType The new field's type (ex: SP.FieldText)
@@ -118,7 +118,7 @@ export class Fields extends SharePointQueryableCollection {
      */
     public addText(title: string, maxLength = 255, properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        const props: { FieldTypeKind: number, MaxLength: number } = {
+        const props = {
             FieldTypeKind: 2,
             MaxLength: maxLength,
         };
@@ -142,17 +142,12 @@ export class Fields extends SharePointQueryableCollection {
         outputType: FieldTypes = FieldTypes.Text,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        const props: {
-            DateFormat: DateTimeFieldFormatType;
-            FieldTypeKind: number;
-            Formula: string;
-            OutputType: FieldTypes;
-        } = {
-                DateFormat: dateFormat,
-                FieldTypeKind: 17,
-                Formula: formula,
-                OutputType: outputType,
-            };
+        const props = {
+            DateFormat: dateFormat,
+            FieldTypeKind: 17,
+            Formula: formula,
+            OutputType: outputType,
+        };
 
         return this.add(title, "SP.FieldCalculated", Util.extend(props, properties));
     }
@@ -172,17 +167,12 @@ export class Fields extends SharePointQueryableCollection {
         friendlyDisplayFormat = 0,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        const props: {
-            DateTimeCalendarType: CalendarType;
-            DisplayFormat: DateTimeFieldFormatType;
-            FieldTypeKind: number;
-            FriendlyDisplayFormat: number;
-        } = {
-                DateTimeCalendarType: calendarType,
-                DisplayFormat: displayFormat,
-                FieldTypeKind: 4,
-                FriendlyDisplayFormat: friendlyDisplayFormat,
-            };
+        const props = {
+            DateTimeCalendarType: calendarType,
+            DisplayFormat: displayFormat,
+            FieldTypeKind: 4,
+            FriendlyDisplayFormat: friendlyDisplayFormat,
+        };
 
         return this.add(title, "SP.FieldDateTime", Util.extend(props, properties));
     }
@@ -201,7 +191,7 @@ export class Fields extends SharePointQueryableCollection {
         maxValue?: number,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        let props: { FieldTypeKind: number } = { FieldTypeKind: 9 };
+        let props = { FieldTypeKind: 9 };
 
         if (typeof minValue !== "undefined") {
             props = Util.extend({ MinimumValue: minValue }, props);
@@ -230,7 +220,7 @@ export class Fields extends SharePointQueryableCollection {
         currencyLocalId = 1033,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        let props: { CurrencyLocaleId: number; FieldTypeKind: number; } = {
+        let props = {
             CurrencyLocaleId: currencyLocalId,
             FieldTypeKind: 10,
         };
@@ -267,21 +257,14 @@ export class Fields extends SharePointQueryableCollection {
         allowHyperlink = true,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        const props: {
-            AllowHyperlink: boolean;
-            AppendOnly: boolean;
-            FieldTypeKind: number;
-            NumberOfLines: number;
-            RestrictedMode: boolean;
-            RichText: boolean;
-        } = {
-                AllowHyperlink: allowHyperlink,
-                AppendOnly: appendOnly,
-                FieldTypeKind: 3,
-                NumberOfLines: numberOfLines,
-                RestrictedMode: restrictedMode,
-                RichText: richText,
-            };
+        const props = {
+            AllowHyperlink: allowHyperlink,
+            AppendOnly: appendOnly,
+            FieldTypeKind: 3,
+            NumberOfLines: numberOfLines,
+            RestrictedMode: restrictedMode,
+            RichText: richText,
+        };
 
         return this.add(title, "SP.FieldMultiLineText", Util.extend(props, properties));
     }
@@ -297,7 +280,7 @@ export class Fields extends SharePointQueryableCollection {
         properties?: FieldCreationProperties,
     ): Promise<FieldAddResult> {
 
-        const props: { DisplayFormat: UrlFieldFormatType; FieldTypeKind: number } = {
+        const props = {
             DisplayFormat: displayFormat,
             FieldTypeKind: 11,
         };
@@ -374,21 +357,14 @@ export class Fields extends SharePointQueryableCollection {
         fillIn?: boolean,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        const props: {
+        const props = {
             Choices: {
-                results: string[];
-            };
-            EditFormat: ChoiceFieldFormatType;
-            FieldTypeKind: number;
-            FillInChoice: boolean;
-        } = {
-                Choices: {
-                    results: choices,
-                },
-                EditFormat: format,
-                FieldTypeKind: 6,
-                FillInChoice: fillIn,
-            };
+                results: choices,
+            },
+            EditFormat: format,
+            FieldTypeKind: 6,
+            FillInChoice: fillIn,
+        };
 
         return this.add(title, "SP.FieldChoice", Util.extend(props, properties));
     }
@@ -407,19 +383,13 @@ export class Fields extends SharePointQueryableCollection {
         fillIn?: boolean,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        const props: {
+        const props = {
             Choices: {
-                results: string[];
-            };
-            FieldTypeKind: number;
-            FillInChoice: boolean;
-        } = {
-                Choices: {
-                    results: choices,
-                },
-                FieldTypeKind: 15,
-                FillInChoice: fillIn,
-            };
+                results: choices,
+            },
+            FieldTypeKind: 15,
+            FillInChoice: fillIn,
+        };
 
         return this.add(title, "SP.FieldMultiChoice", Util.extend(props, properties));
     }
@@ -434,11 +404,9 @@ export class Fields extends SharePointQueryableCollection {
         title: string,
         properties?: FieldCreationProperties): Promise<FieldAddResult> {
 
-        const props: {
-            FieldTypeKind: number;
-        } = {
-                FieldTypeKind: 8,
-            };
+        const props = {
+            FieldTypeKind: 8,
+        };
 
         return this.add(title, "SP.Field", Util.extend(props, properties));
     }
