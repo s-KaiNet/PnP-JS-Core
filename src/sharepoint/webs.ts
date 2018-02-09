@@ -20,7 +20,7 @@ import { Features } from "./features";
 import { SharePointQueryableShareableWeb } from "./sharepointqueryableshareable";
 import { RelatedItemManger, RelatedItemManagerImpl } from "./relateditems";
 import { AppCatalog } from "./appcatalog";
-import { ClientSidePage } from "./clientsidepages";
+import { ClientSidePage, ClientSidePageComponent } from "./clientsidepages";
 
 /**
  * Describes a collection of webs
@@ -514,8 +514,8 @@ export class Web extends SharePointQueryableShareableWeb {
     /**
      * Gets the collection of available client side web parts for this web instance
      */
-    public getClientSideWebParts(): SharePointQueryableCollection {
-        return this.clone(SharePointQueryableCollection, "GetClientSideWebParts");
+    public getClientSideWebParts(): Promise<ClientSidePageComponent[]> {
+        return this.clone(SharePointQueryableCollection, "GetClientSideWebParts").get();
     }
 
     /**
