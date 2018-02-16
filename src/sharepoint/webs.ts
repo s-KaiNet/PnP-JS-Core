@@ -20,7 +20,6 @@ import { Features } from "./features";
 import { SharePointQueryableShareableWeb } from "./sharepointqueryableshareable";
 import { RelatedItemManger, RelatedItemManagerImpl } from "./relateditems";
 import { AppCatalog } from "./appcatalog";
-import { ClientSidePage, ClientSidePageComponent } from "./clientsidepages";
 
 /**
  * Describes a collection of webs
@@ -66,9 +65,9 @@ export class Webs extends SharePointQueryableCollection {
 
         const postBody = JSON.stringify({
             "parameters":
-                Util.extend({
-                    "__metadata": { "type": "SP.WebCreationInformation" },
-                }, props),
+            Util.extend({
+                "__metadata": { "type": "SP.WebCreationInformation" },
+            }, props),
         });
 
         return this.clone(Webs, "add").postCore({ body: postBody }).then((data) => {
@@ -332,12 +331,34 @@ export class Web extends SharePointQueryableShareableWeb {
     }
 
     /**
+     * Gets a folder by server relative relative path if your folder name contains # and % characters
+     * you need to first encode the file name using encodeURIComponent() and then pass the url
+     * let url = "/sites/test/Shared Documents/" + encodeURIComponent("%123");    
+     *
+     * @param folderRelativeUrl The server relative path to the folder (including /sites/ if applicable)
+     */
+    public getFolderByServerRelativePath(folderRelativeUrl: string): Folder {
+        return new Folder(this, `getFolderByServerRelativePath(decodedUrl='${folderRelativeUrl}')`);
+    }
+
+    /**
      * Gets a file by server relative url
      *
      * @param fileRelativeUrl The server relative path to the file (including /sites/ if applicable)
      */
     public getFileByServerRelativeUrl(fileRelativeUrl: string): File {
         return new File(this, `getFileByServerRelativeUrl('${fileRelativeUrl}')`);
+    }
+
+    /**
+     * Gets a file by server relative path if your file name contains # and % characters
+     * you need to first encode the file name using encodeURIComponent() and then pass the url
+     * let url = "/sites/test/Shared Documents/" + encodeURIComponent("%123.docx");
+     * 
+     * @param fileRelativeUrl The server relative path to the file (including /sites/ if applicable)
+     */
+    public getFileByServerRelativePath(fileRelativeUrl: string): File {
+        return new File(this, `getFileByServerRelativePath(decodedUrl='${fileRelativeUrl}')`);
     }
 
     /**
@@ -509,24 +530,6 @@ export class Web extends SharePointQueryableShareableWeb {
      */
     public getAppCatalog(url?: string | Web) {
         return new AppCatalog(url || this);
-    }
-
-    /**
-     * Gets the collection of available client side web parts for this web instance
-     */
-    public getClientSideWebParts(): Promise<ClientSidePageComponent[]> {
-        return this.clone(SharePointQueryableCollection, "GetClientSideWebParts").get();
-    }
-
-    /**
-     * Creates a new client side page
-     * 
-     * @param pageName Name of the new page
-     * @param title Display title of the new page
-     * @param libraryTitle Title of the library in which to create the new page. Default: "Site Pages"
-     */
-    public addClientSidePage(pageName: string, title = pageName.replace(/\.[^/.]+$/, ""), libraryTitle = "Site Pages"): Promise<ClientSidePage> {
-        return ClientSidePage.create(this.lists.getByTitle(libraryTitle), pageName, title);
     }
 }
 
