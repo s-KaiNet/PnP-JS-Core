@@ -54,8 +54,12 @@ export class Items extends SharePointQueryableCollection {
      *
      * @param skip The starting id where the page should start, use with top to specify pages
      */
-    public skip(skip: number): this {
-        this._query.add("$skiptoken", encodeURIComponent(`Paged=TRUE&p_ID=${skip}`));
+    public skip(skip: number, reverse = false): this {
+        if (reverse) {
+            this._query.add("$skiptoken", encodeURIComponent(`Paged=TRUE&PagedPrev=TRUE&p_ID=${skip}`));
+        } else {
+            this._query.add("$skiptoken", encodeURIComponent(`Paged=TRUE&p_ID=${skip}`));
+        }
         return this;
     }
 
@@ -69,7 +73,7 @@ export class Items extends SharePointQueryableCollection {
 
     /**
      * Gets all the items in a list, regardless of count. Does not support batching or caching
-     * 
+     *
      *  @param requestSize Number of items to return in each request (Default: 2000)
      */
     public getAll(requestSize = 2000): Promise<any[]> {
