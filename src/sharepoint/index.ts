@@ -131,8 +131,8 @@ export {
 } from "./siteusers";
 
 export {
-    ActorType,
     SocialActorInfo,
+    SocialActorType,
     SocialFollowResult,
     SocialQuery,
 } from "./social";

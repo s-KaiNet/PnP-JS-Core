@@ -65,7 +65,7 @@ export class SocialQuery extends SharePointQueryableInstance {
  */
 export interface SocialActorInfo {
     AccountName?: string;
-    ActorType: ActorType;
+    ActorType: SocialActorType;
     ContentUri?: string;
     Id?: string;
     TagGuid?: string;
@@ -75,7 +75,7 @@ export interface SocialActorInfo {
  * Social actor type
  *
  */
-export enum ActorType {
+export enum SocialActorType {
     User = 0,
     Document = 1,
     Site = 2,
