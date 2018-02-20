@@ -52,8 +52,8 @@ export class SocialQuery extends SharePointQueryableInstance {
         return JSON.stringify({
             "actor":
                 Util.extend({
-                    "__metadata": { "type": "SP.Social.SocialActorInfo" },
                     Id: null,
+                    "__metadata": { "type": "SP.Social.SocialActorInfo" },
                 }, actorInfo),
         });
     }
