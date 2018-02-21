@@ -9,6 +9,8 @@ export {
     AttachmentFileInfo,
 } from "./attachmentfiles";
 
+export * from "./clientsidepages";
+
 export {
     ODataBatch,
 } from "./batch";
