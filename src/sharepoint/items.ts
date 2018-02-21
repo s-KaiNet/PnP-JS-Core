@@ -53,6 +53,7 @@ export class Items extends SharePointQueryableCollection {
      * Skips the specified number of items (https://msdn.microsoft.com/en-us/library/office/fp142385.aspx#sectionSection6)
      *
      * @param skip The starting id where the page should start, use with top to specify pages
+     * @param reverse It true the PagedPrev=true parameter is added allowing backwards navigation in the collection
      */
     public skip(skip: number, reverse = false): this {
         if (reverse) {
