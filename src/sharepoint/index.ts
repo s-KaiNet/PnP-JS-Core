@@ -133,6 +133,13 @@ export {
 } from "./siteusers";
 
 export {
+    SocialActorInfo,
+    SocialActorType,
+    SocialFollowResult,
+    SocialQuery,
+} from "./social";
+
+export {
     SubscriptionAddResult,
     SubscriptionUpdateResult,
 } from "./subscriptions";
