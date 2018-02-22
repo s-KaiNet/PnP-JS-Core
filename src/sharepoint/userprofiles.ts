@@ -177,6 +177,42 @@ export class UserProfileQuery extends SharePointQueryableInstance {
     }
 
     /**
+     * Sets single value User Profile property
+     *
+     * @param accountName The account name of the user
+     * @param propertyName Property name
+     * @param propertyValue Property value
+     */
+    public setSingleValueProfileProperty(accountName: string, propertyName: string, propertyValue: string): Promise<void> {
+        const postBody: string = JSON.stringify({
+            accountName: accountName,
+            propertyName: propertyName,
+            propertyValue: propertyValue,
+        });
+
+        return this.clone(UserProfileQuery, "SetSingleValueProfileProperty")
+            .postCore({ body: postBody });
+    }
+
+    /**
+     * Sets multi valued User Profile property
+     *
+     * @param accountName The account name of the user
+     * @param propertyName Property name
+     * @param propertyValues Property values
+     */
+    public setMultiValuedProfileProperty(accountName: string, propertyName: string, propertyValues: string[]): Promise<void> {
+        const postBody: string = JSON.stringify({
+            accountName: accountName,
+            propertyName: propertyName,
+            propertyValues: propertyValues,
+        });
+
+        return this.clone(UserProfileQuery, "SetMultiValuedProfileProperty")
+            .postCore({ body: postBody });
+    }
+
+    /**
      * Provisions one or more users' personal sites. (My Site administrator on SharePoint Online only)
      *
      * @param emails The email addresses of the users to provision sites for
