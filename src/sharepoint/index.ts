@@ -132,6 +132,8 @@ export {
     SiteUserProps,
 } from "./siteusers";
 
+export * from "./social";
+
 export {
     SubscriptionAddResult,
     SubscriptionUpdateResult,

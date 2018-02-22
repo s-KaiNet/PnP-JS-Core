@@ -5,6 +5,7 @@ import { Web } from "./webs";
 import { Util } from "../utils/util";
 import { SharePointQueryable, SharePointQueryableConstructor } from "./sharepointqueryable";
 import { UserProfileQuery } from "./userprofiles";
+import { SocialQuery, SocialMethods } from "./social";
 import { NavigationService, INavigationService } from "./navigation";
 import { ODataBatch } from "./batch";
 import { UrlException } from "../utils/exceptions";
@@ -107,6 +108,13 @@ export class SPRest {
      */
     public get profiles(): UserProfileQuery {
         return new UserProfileQuery(this._baseUrl).configure(this._options);
+    }
+
+    /**
+     * Access to social methods
+     */
+    public get social(): SocialMethods {
+        return new SocialQuery(this._baseUrl).configure(this._options);
     }
 
     /**
