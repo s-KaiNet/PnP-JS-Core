@@ -681,7 +681,7 @@ export interface ResultTable {
     ItemTemplateId?: string;
     Properties?: { Key: string, Value: any, ValueType: string }[];
     Table?: { Rows: { Cells: { Key: string, Value: any, ValueType: string }[] }[] };
-    Refiners?: { Entries: { RefinementCount: string; RefinementName: string; RefinementToken: string; RefinementValue: string; }[]; }[];
+    Refiners?: { Name: string; Entries: { RefinementCount: string; RefinementName: string; RefinementToken: string; RefinementValue: string; }[]; }[];
     ResultTitle?: string;
     ResultTitleUrl?: string;
     RowCount?: number;
