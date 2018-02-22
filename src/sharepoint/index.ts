@@ -132,12 +132,7 @@ export {
     SiteUserProps,
 } from "./siteusers";
 
-export {
-    SocialActorInfo,
-    SocialActorType,
-    SocialFollowResult,
-    SocialQuery,
-} from "./social";
+export * from "./social";
 
 export {
     SubscriptionAddResult,
